@@ -2,50 +2,76 @@ const core = require("@actions/core");
 const github = require("@actions/github");
 const axios = require("axios");
 
-const apiGet = async ({ data, path }) => {
-	const apiUrl = 'https://api.netlify.com/api/v1';
-	const response = await axios.get(`${apiUrl}/${path}`, {
-		body: JSON.stringify(data),
-		headers: getHeaders({ token: api.accessToken })
-	});
+const apiGet = async ({ path }) => {
+	const apiUrl = 'https://api.netlify.com/api/v1/';
+	const response = await axios.get(new URL(path, apiUrl).toString());
+	return response.data;
+}
 
-	await checkResponse({ response });
+const getCurrentDeploy = async ({ siteId, sha }) => {
+	const deploys = await apiGet({ path: `sites/${siteId}/deploys` });
+	return deploys.find(deploy => deploy.commit_ref === sha && ['production', 'deploy-preview'].includes(deploy.context));
+}
 
-	return response;
+
+const waitForDeploy = async ({ siteId, sha }) => {
+	const currentDeploy = await getCurrentDeploy({ siteId, sha });
+	if (currentDeploy) {
+		if (currentDeploy.state === 'ready') {
+			console.log('deploy is ready');
+			return currentDeploy;
+		} else if (currentDeploy.state === 'failed') {
+			return null;
+		} else {
+			await new Promise((r) => setTimeout(r, 2000));
+			return waitForDeploy({ siteId, sha });
+		}
+	} else {
+		return null;
+	}
 }
 
 const waitForLive = async ({ siteId, sha, MAX_TIMEOUT }) => {
 	const iterations = MAX_TIMEOUT / 2;
+	let currentDeploy = null;
 	for (let i = 0; i < iterations; i++) {
 		try {
-			const deploys = await apiGet({ path: `/sites/${siteId}/deploys` });
-			const currentDeploy = deploys.find({ commit_ref: sha });
-			if (currentDeploy && ['production', 'deploy_preview'].includes(currentDeploy.context)) {
-				if (currentDeploy.state === 'ready') {
-					return true;
-				} else if (currentDeploy.state === 'failed') {
-					core.setFailed("Netlify deploy failed");
-					return false;
-				}
+			currentDeploy = await getCurrentDeploy({ siteId, sha });
+			if (currentDeploy) {
+				break;
 			} else {
 				await new Promise((r) => setTimeout(r, 2000));
 			}
 		} catch (e) {
+			console.log(e);
 			core.setFailed("Wait for Netlify failed");
+			return;
 		}
+	}
+
+	if (!currentDeploy) {
+		core.setFailed(`Can't find Netlify related to commit: ${sha}`);
+	}
+
+	currentDeploy = await waitForDeploy({ siteId, sha });
+	if (currentDeploy) {
+		core.setOutput("url", currentDeploy.deploy_url);
+	} else {
+		core.setFailed("Netlify deploy error");
 	}
 };
 
 const run = async () => {
 	try {
 		const siteId = core.getInput("site_id");
-		const MAX_TIMEOUT = Number(core.getInput("max_timeout")) || 60;
+		const MAX_TIMEOUT = Number(core.getInput("max_timeout")) || 120;
 
 		if (!siteId) {
 			core.setFailed("Required field `siteId` was not provided");
 		}
 
-		return await waitForLive({ MAX_TIMEOUT, siteId, sha: github.context.payload.head_commit });
+		const sha = github.context.payload.pull_request ? github.context.payload.pull_request.head.sha : github.context.payload.head_commit.id;
+		await waitForLive({ MAX_TIMEOUT, siteId, sha });
 
 	} catch (error) {
 		core.setFailed(error.message);
