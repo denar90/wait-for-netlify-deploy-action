@@ -1,22 +1,15 @@
 name: "Wait for Netlify"
-description: "Wait for Netlify Deploy Preview to complete"
+description: "Wait for Netlify Deploy to complete"
 branding:
   icon: "clock"
   color: "blue"
 inputs:
-  site_name:
-    description: "The Netlify site name to test against"
+  site_id:
+    description: "The Netlify site API id"
     required: true
-  request_headers:
-    description: "Stringified HTTP Header object key/value pairs to send in requests"
-    required: false
   max_timeout:
     description: "The max time to run the action"
     required: false
-  base_path:
-    description: "Base path to test"
-    required: false
-    default: "/"
 outputs:
   url:
     description: "The fully qualified deploy preview URL"
