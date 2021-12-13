@@ -1,4 +1,4 @@
-name: "Wait for Netlify"
+name: "Wait for Netlify Deploy"
 description: "Wait for Netlify Deploy to complete"
 branding:
   icon: "clock"
@@ -12,7 +12,7 @@ inputs:
     required: false
 outputs:
   url:
-    description: "The fully qualified deploy preview URL"
+    description: "The fully qualified deploy URL"
 runs:
   using: "node12"
   main: "index.js"
