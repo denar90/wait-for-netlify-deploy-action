@@ -44,3 +44,37 @@ Url of a site deploy related to the commit.
 
 I was inspiered by https://github.com/JakePartusch/wait-for-netlify-action. 
 Hence this repo is a fork and keeps track of commits history for that action, but bringing new API and workflow.
+
+## Recipes
+
+### Recipe using with Lighthouse CI GitHub Action
+
+```yml
+name: Lighthouse CI for Netlify sites
+on:
+  [push, pull_request]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js 12.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+      - name: Waiting for the Netlify
+        uses: denar90/wait-for-netlify-action@master
+        id: waitForNetlify
+        with:
+          site_id: "12771bc4-662a-4b33-bcf0-cba7a803b3ee"
+      - name: Audit URLs using Lighthouse
+        uses: treosh/lighthouse-ci-action@v3
+        with:
+          urls: |
+            ${{ steps.waitForNetlify.outputs.url }}
+            ${{ steps.waitForNetlify.outputs.url }}/blogs/
+            ${{ steps.waitForNetlify.outputs.url }}/contact/
+          budgetPath: ./budget.json # test performance budgets
+          uploadArtifacts: true # save results as an action artifacts
+          temporaryPublicStorage: true # upload lighthouse report to the temporary storage
+```
