@@ -44,7 +44,3 @@ Url of a site deploy related to the commit.
 
 I was inspiered by https://github.com/JakePartusch/wait-for-netlify-action. 
 Hence this repo is a fork and keeps track of commits history for that action, but bringing new API and workflow.
-
-### License
-
-MIT
