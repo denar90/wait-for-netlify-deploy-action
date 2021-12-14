@@ -1,18 +1,18 @@
-name: "Wait Netlify to Deploy"
-description: "Wait for Netlify to complete live site or preview deploy"
+name: 'Wait Netlify to Deploy'
+description: 'Wait for Netlify to complete live site or preview deploy'
 branding:
-  icon: "clock"
-  color: "blue"
+  icon: 'clock'
+  color: 'blue'
 inputs:
   site_id:
-    description: "The Netlify site API id"
+    description: 'The Netlify site API id'
     required: true
   max_timeout:
-    description: "The max time to run the action"
+    description: 'The max time to run the action'
     required: false
 outputs:
   url:
-    description: "The fully qualified deploy URL"
+    description: 'The fully qualified deploy URL'
 runs:
-  using: "node12"
-  main: "index.js"
+  using: 'node12'
+  main: 'index.js'

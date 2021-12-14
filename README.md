@@ -1,4 +1,4 @@
-# 🐢 Wait for Netlify Deploy — A GitHub Action 
+# 🐢 Wait for Netlify Deploy — A GitHub Action
 
 <img alt="Waiting for deploy logo" title="Waiting for deploy logo" width="300" src="https://user-images.githubusercontent.com/6231516/145876778-d6c79fff-4cb9-42f1-bb73-08ed33b06ba8.png"/>
 
@@ -8,7 +8,7 @@ Using pure [Netlify API](https://docs.netlify.com/api/get-started/) and minimum 
 ## How it works
 
 Using your site API Id, action will poll Netlify API to get proper deploy status of the build related to the commit.
-It supports any flwors, like direct pushes to `main` branch or pull request flows. 
+It supports any flwors, like direct pushes to `main` branch or pull request flows.
 
 Just go to - `Site Settings` menu, and find API Id:
 
@@ -42,7 +42,7 @@ Url of a site deploy related to the commit.
 
 ## How is it different from other Actions?
 
-I was inspiered by https://github.com/JakePartusch/wait-for-netlify-action. 
+I was inspiered by https://github.com/JakePartusch/wait-for-netlify-action.
 Hence this repo is a fork and keeps track of commits history for that action, but bringing new API and workflow.
 
 ## Recipes
@@ -51,8 +51,7 @@ Hence this repo is a fork and keeps track of commits history for that action, bu
 
 ```yml
 name: Lighthouse CI for Netlify sites
-on:
-  [push, pull_request]
+on: [push, pull_request]
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -66,7 +65,7 @@ jobs:
         uses: denar90/wait-for-netlify-action@master
         id: waitForNetlify
         with:
-          site_id: "12771bc4-662a-4b33-bcf0-cba7a803b3ee"
+          site_id: '12771bc4-662a-4b33-bcf0-cba7a803b3ee'
       - name: Audit URLs using Lighthouse
         uses: treosh/lighthouse-ci-action@v3
         with:

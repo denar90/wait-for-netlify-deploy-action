@@ -4,8 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "echo \"Built successfully\""
+    "test": "prettier -c index.js package.json README.md"
   },
   "keywords": [],
   "author": "",
@@ -14,5 +13,8 @@
     "@actions/core": "^1.2.6",
     "@actions/github": "^2.0.0",
     "axios": "^0.19.0"
+  },
+  "devDependencies": {
+    "prettier": "^2.5.1"
   }
 }
