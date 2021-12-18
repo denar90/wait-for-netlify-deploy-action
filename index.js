@@ -56,7 +56,7 @@ const waitForLive = async ({ siteId, sha, MAX_TIMEOUT }) => {
 
   currentDeploy = await waitForDeploy({ siteId, sha })
   if (currentDeploy) {
-    core.setOutput('url', currentDeploy.deploy_url)
+    core.setOutput('url', currentDeploy.deploy_ssl_url)
   } else {
     core.setFailed('Netlify deploy error')
   }
