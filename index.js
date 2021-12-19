@@ -56,7 +56,12 @@ const waitForLive = async ({ siteId, sha, MAX_TIMEOUT }) => {
 
   currentDeploy = await waitForDeploy({ siteId, sha })
   if (currentDeploy) {
-    core.setOutput('url', currentDeploy.deploy_ssl_url)
+    let url = currentDeploy.deploy_ssl_url
+    // compose permalink URL without Netlify Preview drawer
+    if (currentDeploy.context === 'deploy-preview') {
+      url = `https://${currentDeploy.id}--${currentDeploy.name}.netlify.app`
+    }
+    core.setOutput('url', url)
   } else {
     core.setFailed('Netlify deploy error')
   }
