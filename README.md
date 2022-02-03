@@ -45,14 +45,14 @@ Url of a site deploy related to the commit.
 
 ## How is it different from other Actions?
 
-I was inspiered by https://github.com/JakePartusch/wait-for-netlify-action.
+I was inspired by https://github.com/JakePartusch/wait-for-netlify-action.
 Hence this repo is a fork and keeps track of commits history for that action, but bringing new API and workflow.
 
 ## Recipes
 
 ### Recipe using with Lighthouse CI GitHub Action
 
-Netlify permalink deploy has diabled crowling option. Reponse header for the site is set to `x-robots-tag: noindex` not to crowl other site deploy rather than main site. You have to consider that while configuring action, otherwise Lighouse will low down score for SEO category.  
+Netlify permalink deploy has disabled crawling option. Reponse header for the site is set to `x-robots-tag: noindex` not to crawl other site deploy rather than main site. You have to consider that while configuring action, otherwise Lighthouse will low down score for SEO category.  
 
 ```yml
 name: Lighthouse CI for Netlify site
